@@ -65,7 +65,7 @@ export default class CardModal extends Component {
     />
 
     let dueDateBadge
-    if (card.dueDate) {
+    if (card.due_date) {
       dueDateBadge = <Badge card={card} shownOn={'back'}/>
     }
 
@@ -76,7 +76,7 @@ export default class CardModal extends Component {
           <div className="CardModal-content">
             <CardHeader card={card} list={list}/>
             <div className="CardModal-body">
-              <div className="badges">
+              <div className="CardModal-badges">
                 <CardLabels card={card} board={board} labelPanel={labelPanel}/>
                 {dueDateBadge}
               </div>

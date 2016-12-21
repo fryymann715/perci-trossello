@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import $ from 'jquery'
 import Form from '../../Form'
 import Button from '../../Button'
 import DialogBox from '../../DialogBox'
@@ -15,12 +14,15 @@ export default class DueDatePopover extends Component {
     this.timeOnChange = this.timeOnChange.bind(this)
     this.timeOnBlur = this.timeOnBlur.bind(this)
 
-    let date = moment().add(1, 'days').format('MM/DD/YYYY')
-    let time = '12:00 PM'
-    if (this.props.card.dueDate) {
-      let currentDueDate = moment(this.props.card.dueDate)
+    let date, time
+
+    if (this.props.card.due_date) {
+      let currentDueDate = moment(this.props.card.due_date)
       date = currentDueDate.format('MM/DD/YYYY')
       time = currentDueDate.format('hh:mm A')
+    } else {
+      date = moment().add(1, 'days').format('MM/DD/YYYY')
+      time = '12:00 PM'
     }
 
     this.state = {
@@ -31,7 +33,9 @@ export default class DueDatePopover extends Component {
 
   onSubmit(event){
     event.preventDefault()
-    let newDueDate = event.target.name==='add' ? {dueDate: `${this.state.date} ${this.state.time}`} : {dueDate: null}
+    let newDueDate = event.target.name === 'add'
+      ? { due_date: `${this.state.date} ${this.state.time}` }
+      : { due_date: null }
     commands.updateCard( this.props.card.id, newDueDate )
     .then( () => {
       boardStore.reload()
@@ -40,7 +44,7 @@ export default class DueDatePopover extends Component {
   }
 
   dateOnChange(event){
-    this.setState({date: event.target.value})
+      this.setState({date: event.target.value})
   }
 
   dateOnBlur(event){

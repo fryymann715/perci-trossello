@@ -15,7 +15,7 @@ export default class Badge extends Component {
   }
 
   dueStatus() {
-    const dueDate = moment(this.props.card.dueDate)
+    const dueDate = moment(this.props.card.due_date)
     const pastDue = moment().isAfter(dueDate)
     const status = {
       styling: '',
@@ -25,26 +25,26 @@ export default class Badge extends Component {
 
     if (pastDue) {
       if (dueDate.isBefore(moment().subtract(1, 'days'), 'day')) {
-        status.styling = 'due-past-long'
+        status.styling = 'Badge-due-past-long'
         status.preText = dueDate.format('MMM D [at] h:mm')
         status.postText = '(past due)'
       } else {
-        status.styling = 'due-past-recent'
+        status.styling = 'Badge-due-past-recent'
         status.preText = dueDate.calendar(moment(), 'D hh:mm A');
         status.postText = '(recently past due)'
       }
     } else {
       if (dueDate.isAfter(moment().add(1, 'days'), 'day')) {
-        status.styling = 'due-future-distant'
+        status.styling = 'Badge-due-future-distant'
         status.preText = dueDate.format('MMM D [at] h:mm')
       } else {
-        status.styling = 'due-future-near'
+        status.styling = 'Badge-due-future-near'
         status.preText = dueDate.calendar(moment(), 'D hh:mm A');
         status.postText = '(due soon)'
       }
     }
     if (this.props.card.complete){
-      status.styling = 'due-complete'
+      status.styling = 'Badge-due-complete'
       status.postText = ''
     }
     return status
@@ -53,20 +53,20 @@ export default class Badge extends Component {
   render(){
     const { card, shownOn } = this.props
     let status = this.dueStatus()
-    let styling = 'due ' + status.styling
+    let styling = 'Badge-due ' + status.styling
     let renderBadge
 
     if(shownOn === 'front'){
-      let shortDate = moment(card.dueDate).format('MMM D')
+      let shortDate = moment(card.due_date).format('MMM D')
       renderBadge = <div className={styling}><Icon type="clock-o"/><span>{shortDate}</span></div>
     } else {
       let longDate = status.preText
       const dueDatePopover = <DueDatePopover card={card}/>
-      styling += ' due-large'
+      styling += ' Badge-due-large'
       renderBadge = (
           <div className='CardModal-CardBadges'>
             <div className='CardModal-CardBadges-header'>Due Date</div>
-            <PopoverMenuButton key={card.id} type='unstyled' popover={dueDatePopover} className='CardModal-CardBadges-labels-Label buttonHack'>
+            <PopoverMenuButton key={card.id} type='unstyled' popover={dueDatePopover} className='CardModal-CardBadges-labels-Label Badge-buttonHack'>
               <div className={styling}><span>{longDate + ' ' + status.postText}</span></div>
             </PopoverMenuButton>
           </div>
