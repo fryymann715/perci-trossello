@@ -18,8 +18,8 @@ export default class DueDatePopover extends Component {
 
     let date = moment().add(1, 'days').format('MM/DD/YYYY')
     let time = '12:00 PM'
-    if (this.props.card.dueDate) {
-      let currentDueDate = moment(this.props.card.dueDate)
+    if (this.props.card.due_date) {
+      let currentDueDate = moment(this.props.card.due_date)
       date = currentDueDate.format('MM/DD/YYYY')
       time = currentDueDate.format('hh:mm A')
     }

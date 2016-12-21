@@ -16,7 +16,7 @@ export default class Badge extends Component {
 
   dueStatus() {
     const currentTime = moment()
-    const dueDate = moment(this.props.card.dueDate)
+    const dueDate = moment(this.props.card.due_date)
     const pastDue = currentTime.isAfter(dueDate)
     const status = {
       styling: '',
@@ -58,7 +58,7 @@ export default class Badge extends Component {
     let renderBadge
 
     if(shownOn === 'front'){
-      let shortDate = moment(card.dueDate).format('MMM D')
+      let shortDate = moment(card.due_date).format('MMM D')
       renderBadge = <div className={styling}><Icon type="clock-o"/><span>{shortDate}</span></div>
     } else {
       let longDate = status.preText

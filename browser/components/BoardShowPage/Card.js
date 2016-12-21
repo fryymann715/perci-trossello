@@ -84,7 +84,7 @@ export default class Card extends Component {
       style
     } = this.props
 
-    const dueDateBadge = card.dueDate
+    const dueDateBadge = card.due_date
       ? <Badge card={card} shownOn={'front'}/>
       : null
 
