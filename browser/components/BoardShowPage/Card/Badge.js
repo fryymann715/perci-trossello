@@ -15,9 +15,8 @@ export default class Badge extends Component {
   }
 
   dueStatus() {
-    const currentTime = moment()
     const dueDate = moment(this.props.card.dueDate)
-    const pastDue = currentTime.isAfter(dueDate)
+    const pastDue = moment().isAfter(dueDate)
     const status = {
       styling: '',
       preText: '',
@@ -25,7 +24,7 @@ export default class Badge extends Component {
     }
 
     if (pastDue) {
-      if (dueDate.isBefore(currentTime.subtract(1, 'days'), 'day')) {
+      if (dueDate.isBefore(moment().subtract(1, 'days'), 'day')) {
         status.styling = 'due-past-long'
         status.preText = dueDate.format('MMM D [at] h:mm')
         status.postText = '(past due)'
@@ -35,7 +34,7 @@ export default class Badge extends Component {
         status.postText = '(recently past due)'
       }
     } else {
-      if (dueDate.isAfter(currentTime.add(1, 'days'), 'day')) {
+      if (dueDate.isAfter(moment().add(1, 'days'), 'day')) {
         status.styling = 'due-future-distant'
         status.preText = dueDate.format('MMM D [at] h:mm')
       } else {

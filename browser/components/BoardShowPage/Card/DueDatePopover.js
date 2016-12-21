@@ -3,6 +3,7 @@ import $ from 'jquery'
 import Form from '../../Form'
 import Button from '../../Button'
 import DialogBox from '../../DialogBox'
+import commands from '../../../commands'
 import moment from 'moment'
 
 export default class DueDatePopover extends Component {
@@ -13,8 +14,6 @@ export default class DueDatePopover extends Component {
     this.dateOnBlur = this.dateOnBlur.bind(this)
     this.timeOnChange = this.timeOnChange.bind(this)
     this.timeOnBlur = this.timeOnBlur.bind(this)
-    this.removeDueDate = this.removeDueDate.bind(this)
-    this.updateCard = this.updateCard.bind(this)
 
     let date = moment().add(1, 'days').format('MM/DD/YYYY')
     let time = '12:00 PM'
@@ -32,27 +31,12 @@ export default class DueDatePopover extends Component {
 
   onSubmit(event){
     event.preventDefault()
-    let newDueDate = {dueDate: `${this.state.date} ${this.state.time}`}
-    this.updateCard(newDueDate)
-  }
-
-  removeDueDate(event){
-    event.preventDefault()
-    let nullDueDate = {dueDate: null}
-    this.updateCard(nullDueDate)
-  }
-
-  updateCard(data){
-    $.ajax({
-      method: 'put',
-      url: `/api/cards/${this.props.card.id}`,
-      contentType: "application/json; charset=utf-8",
-      dataType:"json",
-      data: JSON.stringify(data)
-    }).then( () => {
+    let newDueDate = event.target.name==='add' ? {dueDate: `${this.state.date} ${this.state.time}`} : {dueDate: null}
+    commands.updateCard( this.props.card.id, newDueDate )
+    .then( () => {
       boardStore.reload()
       this.props.onClose()
-    })
+      })
   }
 
   dateOnChange(event){
@@ -87,7 +71,7 @@ export default class DueDatePopover extends Component {
 
   render (){
     return <DialogBox className="CardModal-CopyCardDialog dueDate" heading='Change Due Date' onClose={this.props.onClose}>
-      <Form onSubmit={this.onSubmit}>
+      <Form action='add' onSubmit={this.onSubmit} name='add'>
         <div className="CardModal-CopyCardDialog-FlexRow">
           <label>Date<input type='text' value={this.state.date} onChange={this.dateOnChange} onBlur={this.dateOnBlur}></input></label>
           <label>Time<input type='text' value={this.state.time} onChange={this.timeOnChange} onBlur={this.timeOnBlur}></input></label>
@@ -97,7 +81,7 @@ export default class DueDatePopover extends Component {
           <Button type='primary' submit>Save</Button>
         </div>
       </Form>
-      <Form onSubmit={this.removeDueDate}>
+      <Form action='remove' onSubmit={this.onSubmit} name='delete'>
         <Button submit type='danger'>Remove</Button>
       </Form>
     </DialogBox>

@@ -84,10 +84,9 @@ export default class Card extends Component {
       style
     } = this.props
 
-    let dueDateBadge
-    if (card.dueDate) {
-      dueDateBadge = <Badge card={card} shownOn={'front'}/>
-    }
+    const dueDateBadge = card.dueDate
+      ? <Badge card={card} shownOn={'front'}/>
+      : null
 
     let cardLabels = !board ? null : card.label_ids
       .map( labelId => board.labels.find(label => label.id === labelId))
