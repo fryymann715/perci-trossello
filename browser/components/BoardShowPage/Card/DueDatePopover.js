@@ -14,33 +14,38 @@ export default class DueDatePopover extends Component {
     this.timeOnChange = this.timeOnChange.bind(this)
     this.timeOnBlur = this.timeOnBlur.bind(this)
 
-    let date, time
-
-    if (this.props.card.due_date) {
-      let currentDueDate = moment(this.props.card.due_date)
-      date = currentDueDate.format('MM/DD/YYYY')
-      time = currentDueDate.format('hh:mm A')
-    } else {
-      date = moment().add(1, 'days').format('MM/DD/YYYY')
-      time = '12:00 PM'
-    }
-
+    let { date, time } = this.getDueDate()
     this.state = {
       date: date,
       time: time
     }
   }
 
+  getDueDate(){
+    let date, time
+    if (this.props.card.due_date) {
+      let currentDueDate = moment(this.props.card.due_date)
+      date = currentDueDate.format('MM/DD/YYYY')
+      time = currentDueDate.format('hh:mm a')
+    } else {
+      date = moment().add(1, 'days').format('MM/DD/YYYY')
+      time = '12:00 pm'
+    }
+    return { date, time }
+  }
+
   onSubmit(event){
     event.preventDefault()
-    let newDueDate = event.target.name === 'add'
-      ? { due_date: `${this.state.date} ${this.state.time}` }
-      : { due_date: null }
-    commands.updateCard( this.props.card.id, newDueDate )
-    .then( () => {
-      boardStore.reload()
-      this.props.onClose()
-      })
+    if ( moment(this.state.time, 'hh:mm a').isValid() && moment( this.state.date ).isValid() ){
+      let newDueDate = event.target.name === 'add'
+        ? { due_date: `${this.state.date} ${this.state.time}` }
+        : { due_date: null }
+      commands.updateCard( this.props.card.id, newDueDate )
+      .then( () => {
+        boardStore.reload()
+        this.props.onClose()
+        })
+    } else return
   }
 
   dateOnChange(event){
@@ -49,9 +54,8 @@ export default class DueDatePopover extends Component {
 
   dateOnBlur(event){
     if (!moment(this.state.date).isValid()) {
-      this.setState({
-        date: moment().add(1, 'days').format('MM/DD/YYYY')
-      })
+      const { date } = this.getDueDate()
+      this.setState({ date: date })
     }
   }
 
@@ -60,18 +64,16 @@ export default class DueDatePopover extends Component {
   }
 
   timeOnBlur(event){
-    if (!moment(this.state.time, 'hh:mm').isValid()) {
-      this.setState({
-        time: '12:00 AM'
-      })
+    if (!moment(this.state.time, 'hh:mm a').isValid()) {
+      const { time } = this.getDueDate()
+      this.setState({ time: time })
     } else {
       this.setState({
-        time: moment(this.state.time, 'hh:mm').format('hh:mm A')
+        time: moment(this.state.time, ['hh:mm a']).format('hh:mm a')
       })
 
     }
   }
-
 
   render (){
     return <DialogBox className="CardModal-CopyCardDialog dueDate" heading='Change Due Date' onClose={this.props.onClose}>
